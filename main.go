@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+
+	"gee"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	r := gee.New()
+	r.GET("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "hello, world\n")
 	})
-	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
