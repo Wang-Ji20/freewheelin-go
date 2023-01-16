@@ -8,7 +8,7 @@ staticcheck: fmt
 	staticcheck ./...
 .PHONY: staticcheck
 
-vet: fmt
+vet: staticcheck
 	go vet ./...
 .PHONY: vet
 

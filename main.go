@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"gee"
@@ -9,7 +8,9 @@ import (
 
 func main() {
 	r := gee.New()
-	r.GET("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "hello, world\n")
+	r.GET("/", func(c *gee.Context) {
+		c.HTML(http.StatusOK, "<h1>hello, world<h1>")
 	})
+
+	r.Run(":9999")
 }
