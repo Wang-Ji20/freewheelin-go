@@ -76,3 +76,9 @@ func div60(i int) {
 - 使用 go func() {} 执行一个并发的 goroutine，需要注意此函数一般为包装函数，参数通常从上下文中捕获（但如果是一个经常变化的变量，需要作为参数)。这个函数不要写在 API 接口里，否则会给调用者带来很大的麻烦。另外，要记得确认这个函数会正常退出。
 - channel 是重要的并发同步机制，通常使用无缓存形式。需要手动关闭。
 - select 类似 switch，但是 case 是在满足读取条件（事件驱动 event-driven )的诸多条件里随机（防止饥荒)选取一个。
+- done channel pattern 用一个 done channel，当完成任务的时候 close(done) 这样，select 里面的 done case 就会可用，返回。
+- waitgroups 等待组
+- once 只运行一次
+- mutex 读写锁
+
+## 值得一提的标准库
