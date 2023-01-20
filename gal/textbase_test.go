@@ -12,12 +12,12 @@ func TestOpenTB(t *testing.T) {
 		t.Errorf("tb open write/create failed.")
 	}
 	defer tb.Close()
-	t.Cleanup(func ()  {
+	t.Cleanup(func() {
 		os.Remove("./test.tb")
 	})
 
 	// case 02: read invalid file format
-	f, _ := os.OpenFile("./testbad.tb", os.O_CREATE | os.O_RDWR, 00700)
+	f, _ := os.OpenFile("./testbad.tb", os.O_CREATE|os.O_RDWR, 00700)
 	f.Close()
 	_, err = OpenTB("./testbad.tb", "r")
 	if err == nil {
@@ -38,7 +38,7 @@ func TestWrite(t *testing.T) {
 	tb, _ = OpenTB("./write.tb", "r")
 	defer tb.Close()
 	d, _ := tb.Step()
-	if msg != d.Text{
+	if msg != d.Text {
 		t.Errorf("expected %s len %d, result %s len %d", msg, len(msg), d.Text, len(d.Text))
 	}
 	t.Cleanup(

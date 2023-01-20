@@ -4,8 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
-	"syscall"
 	"strings"
+	"syscall"
 )
 
 const magicNumber uint8 = 0xAB
@@ -19,8 +19,13 @@ type textbase struct {
 
 type dialogue struct {
 	Length uint64
-	Text string
-	Next uint64
+	Text   string
+	Next   uint64
+}
+
+func (d dialogue) String() string {
+	return fmt.Sprintf("[dialogue length: %d]: %s\n [next dialogue]: %d\nPress any key to continue.\n",
+		d.Length, d.Text, d.Next)
 }
 
 func newTB(path string, perm int) (*textbase, error) {
@@ -40,7 +45,7 @@ func newTB(path string, perm int) (*textbase, error) {
 	} else {
 		b := make([]byte, 1)
 		n, err := f.Read(b)
-		if err != nil || n != 1{
+		if err != nil || n != 1 {
 			f.Close()
 			return nil, fmt.Errorf("the file is corrupted or not gal format: %w", err)
 		}
@@ -51,7 +56,6 @@ func newTB(path string, perm int) (*textbase, error) {
 		File: f,
 	}, nil
 }
-
 
 func OpenTB(path string, mode string) (*textbase, error) {
 	var perm int
@@ -65,25 +69,23 @@ func OpenTB(path string, mode string) (*textbase, error) {
 			perm |= os.O_CREATE
 		}
 	}
-	
+
 	t, err := newTB(path, perm)
 	if err != nil {
 		return nil, fmt.Errorf("OpenTB failed: %w", err)
 	}
-	
+
 	return t, nil
 }
-
 
 func (t *textbase) Close() {
 	defer t.File.Close()
 }
 
-
 func (t *textbase) write(b []byte, offset uint64) (int, error) {
 	l := uint64(len(b))
-	buf := make([]byte,8)
-	
+	buf := make([]byte, 8)
+
 	binary.BigEndian.PutUint64(buf, l)
 	n1, err := t.File.Write(buf)
 	if err != nil {
@@ -101,7 +103,7 @@ func (t *textbase) write(b []byte, offset uint64) (int, error) {
 		return 0, err
 	}
 
-	return (n1+n2+n3), nil
+	return (n1 + n2 + n3), nil
 }
 
 func (t *textbase) WriteNormal(s string) (int, error) {
@@ -112,10 +114,18 @@ func (t *textbase) WriteNormal(s string) (int, error) {
 	return t.write(b, 0)
 }
 
+func (t *textbase) WriteJMP(s string, target uint64) (int, error) {
+	b, err := syscall.ByteSliceFromString(s)
+	if err != nil {
+		return 0, err
+	}
+	return t.write(b, target)
+}
+
 func (t *textbase) readnum() (uint64, error) {
 	buf := make([]byte, 8)
 	n, err := t.File.Read(buf)
-	if err != nil || n != 8{
+	if err != nil || n != 8 {
 		return 0, err
 	}
 	return binary.BigEndian.Uint64(buf), nil
