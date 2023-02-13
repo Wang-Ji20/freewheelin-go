@@ -4,32 +4,31 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
 )
 
 type H map[string]interface{}
 
 type Context struct {
 	Writer http.ResponseWriter
-	Req *http.Request
+	Req    *http.Request
 
-	Path string
+	Path   string
 	Method string
 	Params map[string]string
 
 	StatusCode int
 
 	handlers []HandlerFunc
-	index int
+	index    int
 }
 
 func newContext(w http.ResponseWriter, req *http.Request) *Context {
 	return &Context{
 		Writer: w,
-		Req: req,
-		Path: req.URL.Path,
+		Req:    req,
+		Path:   req.URL.Path,
 		Method: req.Method,
-		index: -1,
+		index:  -1,
 	}
 }
 
@@ -78,7 +77,7 @@ func (c *Context) JSON(code int, obj interface{}) {
 	c.SetHeader("Content-Type", "application/json")
 	c.Status(code)
 	encoder := json.NewEncoder(c.Writer)
-	if err := encoder.Encode(obj) ; err != nil {
+	if err := encoder.Encode(obj); err != nil {
 		panic(err)
 	}
 }

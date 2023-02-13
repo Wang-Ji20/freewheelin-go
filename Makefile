@@ -13,7 +13,6 @@ vet: staticcheck
 .PHONY: vet
 
 build: vet
-	mkdir -p build
-	go build
-	mv main ./build
+	mkdir -p bin
+	go build -o ./bin ./...
 .PHONY: build

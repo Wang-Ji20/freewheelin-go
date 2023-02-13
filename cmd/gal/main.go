@@ -1,6 +1,6 @@
 package main
 
-import "main/gal"
+import "main/pkg/gal"
 
 func main() {
 	p, err := gal.NewParser("./test.txt", "./test.tb")

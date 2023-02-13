@@ -15,10 +15,10 @@ type Engine struct {
 }
 
 type RouterGroup struct {
-	prefix string
+	prefix      string
 	middlewares []HandlerFunc
-	parent *RouterGroup
-	engine *Engine
+	parent      *RouterGroup
+	engine      *Engine
 }
 
 func New() *Engine {
@@ -45,22 +45,21 @@ func (group *RouterGroup) addRoute(method string, pattern string, handler Handle
 	group.engine.router.add(method, pattern, handler)
 }
 
-func (group *RouterGroup) GET(pattern string, handler HandlerFunc)  {
+func (group *RouterGroup) GET(pattern string, handler HandlerFunc) {
 	group.addRoute("GET", pattern, handler)
 }
 
-func (group *RouterGroup) POST(pattern string, handler HandlerFunc)  {
+func (group *RouterGroup) POST(pattern string, handler HandlerFunc) {
 	group.addRoute("POST", pattern, handler)
 }
 
-func (group *RouterGroup) Use (middlewares ...HandlerFunc) {
+func (group *RouterGroup) Use(middlewares ...HandlerFunc) {
 	group.middlewares = append(group.middlewares, middlewares...)
 }
 
 func (engine *Engine) Run(addr string) error {
 	return http.ListenAndServe(addr, engine)
 }
-
 
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var middlewares []HandlerFunc
